@@ -5,7 +5,7 @@ import { VendorsService } from '../vendors/vendors.service';
 import { ProjectsService } from '../projects/projects.service';
 import { UserRole } from '../users/user.entity';
 import * as bcrypt from 'bcryptjs';
-import { ProjectStatus } from 'src/projects/project.entity';
+import { ProjectStatus } from '../projects/project.entity';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
