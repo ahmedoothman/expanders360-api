@@ -95,4 +95,59 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
   }
+
+  // Find user by ID including password for authentication
+  async findById(id: number): Promise<User | null> {
+    return this.usersRepository.findOne({
+      where: { id },
+    });
+  }
+
+  // Update user with OTP and expiration time
+  async updateOtp(id: number, otp: string, expiresAt: Date): Promise<void> {
+    await this.usersRepository.update(id, {
+      reset_password_otp: otp,
+      otp_expires_at: expiresAt,
+    });
+  }
+
+  // Update password only
+  async updatePassword(id: number, hashedPassword: string): Promise<void> {
+    await this.usersRepository.update(id, {
+      password: hashedPassword,
+    });
+  }
+
+  // Update password and clear OTP fields
+  async updatePasswordAndClearOtp(
+    id: number,
+    hashedPassword: string,
+  ): Promise<void> {
+    await this.usersRepository.update(id, {
+      password: hashedPassword,
+      reset_password_otp: undefined,
+      otp_expires_at: undefined,
+    });
+  }
+
+  // Update user with email verification OTP
+  async updateEmailVerificationOtp(
+    id: number,
+    otp: string,
+    expiresAt: Date,
+  ): Promise<void> {
+    await this.usersRepository.update(id, {
+      email_verification_otp: otp,
+      email_otp_expires_at: expiresAt,
+    });
+  }
+
+  // Verify email and activate account
+  async verifyEmailAndActivate(id: number): Promise<void> {
+    await this.usersRepository.update(id, {
+      is_email_verified: true,
+      email_verification_otp: undefined,
+      email_otp_expires_at: undefined,
+    });
+  }
 }

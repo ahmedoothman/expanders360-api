@@ -5,6 +5,7 @@ import { VendorsService } from '../vendors/vendors.service';
 import { ProjectsService } from '../projects/projects.service';
 import { UserRole } from '../users/user.entity';
 import * as bcrypt from 'bcryptjs';
+import { ProjectStatus } from 'src/projects/project.entity';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -23,7 +24,7 @@ async function bootstrap() {
     role: UserRole.CLIENT,
   });
 
-  const admin = await usersService.create({
+  await usersService.create({
     company_name: 'Expanders360',
     contact_email: 'admin@expanders360.com',
     password: hashedPassword,
@@ -45,7 +46,7 @@ async function bootstrap() {
     country: 'Germany',
     services_needed: ['legal', 'accounting'],
     budget: 50000,
-    status: 'active',
+    status: ProjectStatus.ACTIVE,
   });
 
   console.log('✅ Database seeded successfully!');

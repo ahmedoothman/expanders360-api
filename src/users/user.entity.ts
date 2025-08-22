@@ -34,6 +34,21 @@ export class User {
   })
   role: UserRole;
 
+  @Column({ nullable: true })
+  reset_password_otp: string;
+
+  @Column({ nullable: true })
+  otp_expires_at: Date;
+
+  @Column({ nullable: true })
+  email_verification_otp: string;
+
+  @Column({ nullable: true })
+  email_otp_expires_at: Date;
+
+  @Column({ default: false })
+  is_email_verified: boolean;
+
   @OneToMany(() => Project, (project) => project.client)
   projects: Project[];
 
