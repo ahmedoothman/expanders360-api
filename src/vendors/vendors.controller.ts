@@ -21,12 +21,15 @@ export class VendorsController {
   constructor(private readonly vendorsService: VendorsService) {}
 
   @Post()
-  create(@Body() createVendorDto: CreateVendorDto) {
-    return this.vendorsService.create(createVendorDto);
+  async create(@Body() createVendorDto: CreateVendorDto) {
+    return {
+      status: 'success',
+      data: await this.vendorsService.create(createVendorDto),
+    };
   }
 
   @Get()
-  findAll(
+  async findAll(
     @Query('country') country?: string,
     @Query('service') service?: string,
   ) {
@@ -36,24 +39,36 @@ export class VendorsController {
     if (service) {
       return this.vendorsService.findByService(service);
     }
-    return this.vendorsService.findAll();
+    return {
+      status: 'success',
+      data: await this.vendorsService.findAll(),
+    };
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.vendorsService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return {
+      status: 'success',
+      data: await this.vendorsService.findOne(id),
+    };
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateVendorDto: UpdateVendorDto,
   ) {
-    return this.vendorsService.update(id, updateVendorDto);
+    return {
+      status: 'success',
+      data: await this.vendorsService.update(id, updateVendorDto),
+    };
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.vendorsService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return {
+      status: 'success',
+      data: await this.vendorsService.remove(id),
+    };
   }
 }
