@@ -1,5 +1,31 @@
 version: '3.8'
 services:
+  api:
+    build: .
+    container_name: expanders360_api
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_HOST=mysql
+      - DATABASE_PORT=3306
+      - DATABASE_USERNAME=othman
+      - DATABASE_PASSWORD=othmanpassword
+      - DATABASE_NAME=expanders360
+      - MONGODB_URI=mongodb://mongo_user:mongo_pass@mongodb:27017/expanders360_docs?authSource=admin
+      - JWT_SECRET=othmansecretkey
+      - JWT_EXPIRES_IN=24h
+      - EMAIL_HOST=smtp.gmail.com
+      - EMAIL_PORT=465
+      - EMAIL_USER=send.email.dev.othman@gmail.com
+      - EMAIL_PASS=kqnjarstqzrezwgx
+      - PORT=3000
+      - NODE_ENV=production
+      - ADMIN_EMAIL=a.oosman.g@gmail.com
+    depends_on:
+      - mysql
+      - mongodb
+    restart: unless-stopped
+
   mysql:
     image: mysql:8.0
     container_name: expanders_mysql
@@ -12,6 +38,7 @@ services:
       - '3307:3306'
     volumes:
       - mysql_data:/var/lib/mysql
+    restart: unless-stopped
 
   mongodb:
     image: mongo:6.0
@@ -24,6 +51,7 @@ services:
       - '27017:27017'
     volumes:
       - mongo_data:/data/db
+    restart: unless-stopped
 
 volumes:
   mysql_data:
