@@ -28,7 +28,7 @@ export class ProjectsController {
 
   @Get()
   findAll(
-    @Query('client_id', ParseIntPipe) clientId?: number,
+    @Query('client_id', new ParseIntPipe({ optional: true })) clientId?: number,
     @Query('status') status?: ProjectStatus,
     @Query('country') country?: string,
   ) {

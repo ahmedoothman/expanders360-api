@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { MatchesService } from '../../matches/matches.service';
-import { DocumentsService } from '../../documents/documents.service';
+import { MatchesService } from '../matches/matches.service';
+import { DocumentsService } from '../documents/documents.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Project } from '../../projects/project.entity';
+import { Project } from '../projects/project.entity';
 
 @Injectable()
 export class AnalyticsService {
@@ -23,19 +23,22 @@ export class AnalyticsService {
     const documentCounts = await this.getDocumentCountsByCountry(countries);
 
     // Combine the data
-    const result = {};
+    const result: Record<string, { top_vendors: any; document_count: number }> =
+      {};
     for (const country of countries) {
       result[country] = {
         top_vendors: topVendors[country],
-        document_count: documentCounts[country] || 0,
+        document_count: documentCounts[country] ?? 0,
       };
     }
 
     return result;
   }
 
-  private async getDocumentCountsByCountry(countries: string[]) {
-    const result = {};
+  private async getDocumentCountsByCountry(
+    countries: string[],
+  ): Promise<Record<string, number>> {
+    const result: Record<string, number> = {};
 
     for (const country of countries) {
       // Get project IDs for this country

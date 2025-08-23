@@ -28,8 +28,8 @@ export class MatchesService {
     // Find eligible vendors
     const vendors = await this.vendorRepository
       .createQueryBuilder('vendor')
-      .where(':country = ANY(vendor.countries_supported)', {
-        country: project.country,
+      .where('JSON_CONTAINS(vendor.countries_supported, :country)', {
+        country: JSON.stringify(project.country),
       })
       .getMany();
 
@@ -51,6 +51,8 @@ export class MatchesService {
 
         if (existingMatch) {
           existingMatch.score = score;
+          existingMatch.project = project;
+          existingMatch.vendor = vendor;
           await this.matchRepository.save(existingMatch);
           matches.push(existingMatch);
         } else {
@@ -58,6 +60,8 @@ export class MatchesService {
             project_id: projectId,
             vendor_id: vendor.id,
             score,
+            project: project,
+            vendor: vendor,
           });
           const savedMatch = await this.matchRepository.save(newMatch);
           matches.push(savedMatch);
@@ -105,8 +109,8 @@ export class MatchesService {
 
     const topVendors: RawVendorResult[] = await this.matchRepository
       .createQueryBuilder('match')
-      .leftJoin('match.vendor', 'vendor')
-      .leftJoin('match.project', 'project')
+      .leftJoin(Project, 'project', 'project.id = match.project_id')
+      .leftJoin(Vendor, 'vendor', 'vendor.id = match.vendor_id')
       .select([
         'project.country as country',
         'vendor.id as vendor_id',

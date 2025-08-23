@@ -22,9 +22,6 @@ export class Project {
   id: number;
 
   @Column()
-  client_id: number;
-
-  @Column()
   country: string;
 
   @Column('json')
@@ -40,7 +37,10 @@ export class Project {
   })
   status: ProjectStatus;
 
-  @ManyToOne(() => User, (user) => user.projects)
+  @ManyToOne(() => User, (user) => user.projects, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   client: User;
 
   @OneToMany(() => Match, (match) => match.project)

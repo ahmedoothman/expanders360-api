@@ -7,7 +7,7 @@ config();
 
 const configService = new ConfigService();
 
-export const AppDataSource = new DataSource({
+const AppDataSource = new DataSource({
   type: 'mysql',
   host: configService.get('DATABASE_HOST') || 'localhost',
   port: parseInt(configService.get('DATABASE_PORT') || '3307'),

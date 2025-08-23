@@ -15,21 +15,18 @@ import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
-@Controller('vendors')
+@Controller({ path: 'vendors', version: '1' })
 @UseGuards(JwtAuthGuard)
 export class VendorsController {
   constructor(private readonly vendorsService: VendorsService) {}
 
   @Post()
-  async create(@Body() createVendorDto: CreateVendorDto) {
-    return {
-      status: 'success',
-      data: await this.vendorsService.create(createVendorDto),
-    };
+  create(@Body() createVendorDto: CreateVendorDto) {
+    return this.vendorsService.create(createVendorDto);
   }
 
   @Get()
-  async findAll(
+  findAll(
     @Query('country') country?: string,
     @Query('service') service?: string,
   ) {
@@ -39,36 +36,24 @@ export class VendorsController {
     if (service) {
       return this.vendorsService.findByService(service);
     }
-    return {
-      status: 'success',
-      data: await this.vendorsService.findAll(),
-    };
+    return this.vendorsService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    return {
-      status: 'success',
-      data: await this.vendorsService.findOne(id),
-    };
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.vendorsService.findOne(id);
   }
 
   @Patch(':id')
-  async update(
+  update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateVendorDto: UpdateVendorDto,
   ) {
-    return {
-      status: 'success',
-      data: await this.vendorsService.update(id, updateVendorDto),
-    };
+    return this.vendorsService.update(id, updateVendorDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
-    return {
-      status: 'success',
-      data: await this.vendorsService.remove(id),
-    };
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.vendorsService.remove(id);
   }
 }

@@ -4,8 +4,9 @@ export class CreateMatchDto {
   @IsNumber()
   project_id: number;
 
+  @IsOptional()
   @IsNumber()
-  vendor_id: number;
+  vendor_id?: number;
 
   @IsOptional()
   @IsNumber()

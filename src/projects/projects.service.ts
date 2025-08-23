@@ -1,19 +1,42 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project, ProjectStatus } from './project.entity';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class ProjectsService {
   constructor(
     @InjectRepository(Project)
     private projectsRepository: Repository<Project>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
   async create(createProjectDto: CreateProjectDto): Promise<Project> {
-    const project = this.projectsRepository.create(createProjectDto);
+    // First, validate that the client exists
+    const client = await this.usersRepository.findOne({
+      where: { id: createProjectDto.client_id },
+    });
+
+    if (!client) {
+      throw new BadRequestException(
+        `Client with ID ${createProjectDto.client_id} not found`,
+      );
+    }
+
+    // Create project with the validated client
+    const project = this.projectsRepository.create({
+      ...createProjectDto,
+      client: client,
+    });
+
     return this.projectsRepository.save(project);
   }
 
@@ -38,7 +61,7 @@ export class ProjectsService {
 
   async findByClient(clientId: number): Promise<Project[]> {
     return this.projectsRepository.find({
-      where: { client_id: clientId },
+      where: { client: { id: clientId } },
       relations: ['client'],
     });
   }
