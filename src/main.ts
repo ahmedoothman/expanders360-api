@@ -41,7 +41,6 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
   console.log(`🚀 Application is running on port ${port}`);
-  console.log(`🔗 Health check: http://localhost:${port}/health`);
 }
 bootstrap().catch((error) =>
   console.error('Application failed to start:', error),
