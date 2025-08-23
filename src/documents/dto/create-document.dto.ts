@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsUrl,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateDocumentDto {
   @IsNotEmpty()
@@ -14,6 +15,7 @@ export class CreateDocumentDto {
   content: string;
 
   @IsNumber()
+  @Transform(({ value }) => parseInt(value as string, 10))
   projectId: number;
 
   @IsOptional()
@@ -26,6 +28,7 @@ export class CreateDocumentDto {
 
   @IsOptional()
   @IsNumber()
+  @Transform(({ value }) => (value ? parseInt(value as string, 10) : undefined))
   fileSize?: number;
 
   @IsOptional()

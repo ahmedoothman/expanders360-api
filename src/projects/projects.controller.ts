@@ -15,11 +15,15 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ProjectStatus } from './project.entity';
+import { MatchesService } from '../matches/matches.service';
 
 @Controller('projects')
 @UseGuards(JwtAuthGuard)
 export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(
+    private readonly projectsService: ProjectsService,
+    private readonly matchesService: MatchesService,
+  ) {}
 
   @Post()
   create(@Body() createProjectDto: CreateProjectDto) {
@@ -55,6 +59,11 @@ export class ProjectsController {
     @Body() updateProjectDto: UpdateProjectDto,
   ) {
     return this.projectsService.update(id, updateProjectDto);
+  }
+
+  @Get(':id/matches/rebuild')
+  rebuildMatches(@Param('id', ParseIntPipe) id: number) {
+    return this.matchesService.rebuildMatches(id);
   }
 
   @Delete(':id')

@@ -14,6 +14,7 @@ import { DocumentsService } from './documents.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { SearchDocumentsDto } from './dto/search-documents.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { multerConfig } from '../config/multer.config';
 
 @Controller('documents')
 @UseGuards(JwtAuthGuard)
@@ -26,7 +27,7 @@ export class DocumentsController {
   }
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', multerConfig))
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Body() createDocumentDto: CreateDocumentDto,
@@ -34,7 +35,7 @@ export class DocumentsController {
     if (file) {
       createDocumentDto.fileSize = file.size;
       createDocumentDto.mimeType = file.mimetype;
-      // In production, upload file to cloud storage and get URL
+      // File is now saved to disk, store the relative path
       createDocumentDto.fileUrl = `/uploads/${file.filename}`;
     }
     return this.documentsService.create(createDocumentDto);
