@@ -14,9 +14,14 @@ export class AppController {
   getHealth(): object {
     return {
       status: 'ok',
+      message: 'API is running',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
       environment: process.env.NODE_ENV || 'development',
+      database: {
+        mysql: !!process.env.DATABASE_HOST,
+        mongodb: !!process.env.MONGODB_URI,
+      },
     };
   }
 }
