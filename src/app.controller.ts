@@ -19,8 +19,12 @@ export class AppController {
       uptime: process.uptime(),
       environment: process.env.NODE_ENV || 'development',
       database: {
-        mysql: !!process.env.DATABASE_HOST,
-        mongodb: !!process.env.MONGODB_URI,
+        mysql: !!(
+          process.env.DATABASE_URL ||
+          process.env.DATABASE_HOST ||
+          process.env.MYSQLHOST
+        ),
+        mongodb: !!(process.env.MONGODB_URL || process.env.MONGODB_URI),
       },
     };
   }
